@@ -18,10 +18,13 @@ for f in *.ogg; do
 
     video_tags="$clean_phone_name, $clean_folder, $final_title, ringtone, nostalgia, classic phone"
     video_description="Enjoy the classic $final_title $clean_folder from the legendary $clean_phone_name. Subscribe for more high-quality nostalgia ringtones! #$clean_folder #$clean_phone_name #nostalgia 
-I use urvid to automate my videos with ringtones, alarms, notifications and ui. Try it out👉 https://github.com/theegoiko/urvid"
+I use urvid to automate my videos with ringtones, alarms, notifications and ui. Try it out⬇️ https://github.com/theegoiko/urvid"
 
     # Make batch videos
-    ffmpeg -loop 1 -i background.* -i "$f" -c:v libx264 -tune stillimage -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2,drawtext=text='$final_title':fontcolor=white:fontsize=60:borderw=3:bordercolor=black:x=(w-text_w)/2:y=(h-text_h)/2" -c:a aac -b:a 192k -pix_fmt yuv420p -movflags +faststart -shortest "$file_name"
+    ffmpeg -loop 1 -i background.* -i "$f" -c:v libx264 -tune stillimage -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2,drawtext=text='$final_title':fontcolor=white:fontsize=h/20:borderw=3:bordercolor=black:x=(w-text_w)/2:y=(h-text_h)/2" -c:a aac -b:a 192k -pix_fmt yuv420p -movflags +faststart -shortest "$file_name"
+
+    # Wait 60s to offload yt api
+    sleep 60
 
     # Upload batched videos
     youtube-upload \
