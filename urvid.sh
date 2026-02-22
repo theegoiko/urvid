@@ -9,6 +9,8 @@ playlist_name="$clean_phone_name - $current_folder"
 
 for f in *.ogg; do
     raw_title="${f%.ogg}"
+    # Samsung Galaxy S3/R Style display name fix
+    raw_title=$(echo "$raw_title" | sed -E 's/^([0-9]+_|S_)//')
     clean_title="${raw_title//_/ }"
     final_title="${clean_title,,}"
     final_title="${final_title^}"
@@ -23,8 +25,8 @@ I use urvid to automate my videos with ringtones, alarms, notifications and ui. 
     # Make batch videos
     ffmpeg -loop 1 -i background.* -i "$f" -c:v libx264 -tune stillimage -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2,drawtext=text='$final_title':fontcolor=white:fontsize=h/20:borderw=3:bordercolor=black:x=(w-text_w)/2:y=(h-text_h)/2" -c:a aac -b:a 192k -pix_fmt yuv420p -movflags +faststart -shortest "$file_name"
 
-    # Wait 60s to offload yt api
-    sleep 60
+    # Wait 65s to offload yt api
+    sleep 65
 
     # Upload batched videos
     youtube-upload \
@@ -37,3 +39,4 @@ I use urvid to automate my videos with ringtones, alarms, notifications and ui. 
       --client-secrets="client_secrets.json" \
       "$file_name"
 done
+
