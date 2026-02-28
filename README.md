@@ -18,12 +18,12 @@ sudo apt install ffmpeg python3 python3-pip python3-setuptools git nano -y
 pip3 install google-api-python-client google-auth-oauthlib google-auth-httplib2 oauth2client --break-system-packages
 
 3. Go to the YouTube uploader and install it:
-cd youtube-upload
+cd urvid && cd youtube-upload
 && sudo python3 setup.py install
 
-4. Put urvid.sh into your ringtones/notifications/alarms/ui folder
+5. Put urvid.sh into your ringtones/notifications/alarms/ui folder
 
-5. Run:
+6. Run:
 chmod +x urvid.sh
 ./urvid.sh
 
