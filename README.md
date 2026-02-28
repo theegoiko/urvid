@@ -19,7 +19,7 @@ pip3 install google-api-python-client google-auth-oauthlib google-auth-httplib2 
 
 3. Go to the YouTube uploader and install it:
 cd youtube-upload
-sudo python3 setup.py install
+&& sudo python3 setup.py install
 
 4. Put urvid.sh into your ringtones/notifications/alarms/ui folder
 
