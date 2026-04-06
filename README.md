@@ -114,9 +114,8 @@ Open PowerShell, navigate to your `urvid` folder, and run the script, passing th
 ```
 
 **On Linux / Mac (Bash):**
-*(Assuming you have a bash equivalent script like `urvid.sh`)*
 ```bash
-./urvid.sh "/home/user/Downloads/TCL-60-XE/ringtones"
+./urvid_linux.sh "/home/user/Downloads/TCL-60-XE/ringtones"
 ```
 
 ### First-Time Upload Authentication
