@@ -1,7 +1,4 @@
 
-***
-
-```markdown
 # URVID (Universal Ringtone Video & Upload Daemon)
 
 [![GitHub Repo](https://img.shields.io/badge/Source-theegoiko%2Furvid-blue?logo=github)](https://github.com/theegoiko/urvid)
