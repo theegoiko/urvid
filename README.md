@@ -45,7 +45,7 @@ You need to download your audio files to process. A massive, excellent archive o
    python -m pip install google-api-python-client oauth2client httplib2
    ```
 
-### macOS
+### macOS (use urvid_linux.sh)
 1. **Install Homebrew** (if you don't have it):
    ```bash
    /bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
