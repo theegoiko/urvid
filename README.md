@@ -1,66 +1,130 @@
-# urvid
-Makes a batch of ringtone, notification, alarm and/or UI videos and uploads them to YouTube. 
 
-An automated script on Bash that makes ringtone videos, provide that you have a folder with ringtones/alarms/notifications/ui in .ogg format a background in.png format, and a client_secrets.json file.
-For inspiration, look at onj3 andrelouis library (always try to choose Android devices): http://onj3.andrelouis.com/phonetones/zipped/ 
-Unzip the archive, put urvid.sh, client_secrets.json and the background.jpg into the desired folder and enjoy!
+# URVID (Universal Ringtone VIDeo)
 
+[![GitHub Repo](https://img.shields.io/badge/Source-theegoiko%2Furvid-blue?logo=github)](https://github.com/theegoiko/urvid)
 
-It makes a video, if provided with background.png file, merges the background.png and the .ogg audio files, adds the ringtone name into a white text with black outline, and uploads them to YouTube.
-Look at my channel if you want to see what the final result looks like:
-https://youtube.com/@theegoiko?si=m1aByadotdUpuj8C
+URVID is an automated batch-processing tool designed to take entire folders of audio files (like phone ringtones or notifications), convert them into high-quality static-image videos using FFmpeg with auto-scaling text overlays, and automatically upload them to YouTube via the YouTube Data API.
 
-1. Update and install tools:
-sudo apt update && sudo apt upgrade -y
-sudo apt install ffmpeg python3 python3-pip python3-setuptools git nano -y
+## 🌟 Features
+* **Batch Processing:** Point it at a folder and let it encode/upload dozens of files consecutively.
+* **Auto-Scaling Text:** FFmpeg logic automatically scales the text overlay proportionally to your background image (`h/20`).
+* **Smart Titling:** Automatically generates YouTube titles based on your folder structure (e.g., `Device Name Category - Audio Name`).
+* **Cross-Platform:** Core logic relies on Python and FFmpeg, operable on Windows, macOS, and Linux.
 
-2. Install the Google API libraries:
-pip3 install google-api-python-client google-auth-oauthlib google-auth-httplib2 oauth2client --break-system-packages
+---
 
-3. Install the submodule
+## 🖥️ Minimum System Requirements
+Since URVID processes static images rather than full-motion video, it runs well on lightweight systems.
+* **OS:** Windows 10/11, macOS 10.15+, or Linux (Ubuntu 20.04+ / Arch / Fedora).
+* **CPU:** Dual-core processor (1.5 GHz or higher).
+* **RAM:** 4 GB minimum (8 GB recommended for smoother FFmpeg execution).
+* **Storage:** ~500 MB for Python, FFmpeg, and the repo + temporary space for video rendering (cleaned up automatically).
+* **Network:** Stable internet connection for YouTube API uploads.
 
-   cd ~/urvid && 
-git submodule update --init --recursive
+---
 
-5. Go to the YouTube uploader and install it:
-cd youtube-upload
-&& sudo python3 setup.py install
+## 🛠️ Installation Guide
 
-6. Put urvid.sh into your ringtones/notifications/alarms/ui folder
+### 1. Prerequisites (All Operating Systems)
+You need to download your audio files to process. A massive, excellent archive of zipped phone ringtones can be found here:
+🔗 **[Andre Louis's Phonetones Archive](http://onj3.andrelouis.com/phonetones/zipped/)**
 
-7. Run:
-chmod +x urvid.sh
-./urvid.sh
+### Windows
+1. **Install Python:** Download and install Python 3.x from [python.org](https://www.python.org/downloads/). *(Make sure to check "Add Python to PATH" during installation!)*
+2. **Install FFmpeg:** Download FFmpeg from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) or install via Winget:
+   ```powershell
+   winget install ffmpeg
+   ```
+3. **Clone the Repository:**
+   ```powershell
+   git clone [https://github.com/theegoiko/urvid.git](https://github.com/theegoiko/urvid.git)
+   cd urvid
+   ```
+4. **Install Python Dependencies:**
+   ```powershell
+   python -m pip install google-api-python-client oauth2client httplib2
+   ```
 
-If you do not have a client_secrets.json file, then:
+### macOS (use urvid_linux.sh)
+1. **Install Homebrew** (if you don't have it):
+   ```bash
+   /bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
+   ```
+2. **Install Python & FFmpeg:**
+   ```bash
+   brew install python ffmpeg git
+   ```
+3. **Clone and Setup:**
+   ```bash
+   git clone [https://github.com/theegoiko/urvid.git](https://github.com/theegoiko/urvid.git)
+   cd urvid
+   pip3 install google-api-python-client oauth2client httplib2
+   ```
 
-​1. Create a New Project
-​Go to the Google Cloud Console.
-​Click the project dropdown menu at the top (next to "Google Cloud") and select New Project.
-​Name it something recognizable, such as Ringtone-Uploader, and click Create.
+### Linux (Debian / Ubuntu)
+1. **Install System Packages:**
+   ```bash
+   sudo apt update
+   sudo apt install python3 python3-pip ffmpeg git -y
+   ```
+2. **Clone and Setup:**
+   ```bash
+   git clone [https://github.com/theegoiko/urvid.git](https://github.com/theegoiko/urvid.git)
+   cd urvid
+   pip3 install google-api-python-client oauth2client httplib2
+   ```
 
-​2. Enable YouTube Data API
-​In the top search bar, type "YouTube Data API v3".
-​Select it from the search results and click the Enable button.
+---
 
-​3. Configure OAuth Consent Screen
-​Google requires identification for permission requests.
-​Navigate to APIs & Services > OAuth consent screen in the left sidebar.
-​Select External and click Create.
-​Fill in the required fields:
-​App name: Ringtone Bot
-​User support email: Your email address.
-​Developer contact information: Your email address.
-​Click Save and Continue through the "Scopes" and "Test users" sections.
-Under Test users, ensure you add your own Gmail address. This allows you to log in while the app is still in "Testing" mode.
+## ⚙️ Configuration & Project Setup
 
-​4. Create Credentials (JSON File)
-​Go to APIs & Services > Credentials.
-​Click + Create Credentials at the top and select OAuth client ID.
-​For Application type, select Desktop app (this is the correct choice for scripts, even if running on Termux).
-​Give it a name and click Create.
-​A dialog box will appear stating "OAuth client created." Click Download JSON.
+Before running the script, ensure your `urvid` folder is structured correctly:
 
-​5. Rename Credential File
-​Locate the downloaded file (usually named client_secrets_xxxxxx.json).
-​Rename it exactly to client_secrets.json and place it in your project root directory.
+1. **Background Image:** Place a background image named `background.jpg` inside the `assets/` folder.
+2. **YouTube API Credentials:** * You need a YouTube Data API v3 application setup in Google Cloud Console.
+   * Download your OAuth 2.0 Client IDs JSON file.
+   * Rename it to `client_secrets.json` and place it in the `assets/` folder.
+3. **YouTube-Upload Module:** Ensure the `youtube-upload` folder/submodule is present inside the root directory.
+
+*Note for Windows Users: The script automatically bypasses FFmpeg's notorious `fontconfig` crash by pointing directly to `C:/Windows/Fonts/arial.ttf`.*
+
+---
+
+## 🚀 How to Use
+
+URVID uses a **smart-naming system**. It looks at the folder structure of your audio files to determine the YouTube video title. 
+
+Organize your downloaded audio files like this:
+```text
+Downloads/
+└── TCL-60-XE/                 <-- Device Name
+    └── ringtones/             <-- Category
+        ├── Bell_Phone.mp3     <-- Audio File
+        └── Cyan.mp3
+```
+*This will generate a YouTube video titled: **"TCL 60 XE ringtone - Bell Phone"***
+
+### Running the Batch Upload
+
+**On Windows (PowerShell):**
+Open PowerShell, navigate to your `urvid` folder, and run the script, passing the target audio folder in quotes:
+
+```powershell
+.\urvid_windows.ps1 "C:\Users\YourName\Downloads\TCL-60-XE\ringtones"
+```
+
+**On Linux / Mac (Bash):**
+```bash
+./urvid_linux.sh "/home/user/Downloads/TCL-60-XE/ringtones"
+```
+
+### First-Time Upload Authentication
+The very first time you run URVID, it will pause the upload and prompt you with a URL.
+1. Copy the Google URL and paste it into your browser.
+2. Sign in to the YouTube channel where you want to upload the videos.
+3. Allow the requested permissions.
+4. Copy the authorization code provided by Google.
+5. Paste it back into your terminal. 
+
+*URVID will generate a `youtube.token` file in your `assets/` folder, meaning you won't have to sign in again for future uploads!*
+```
