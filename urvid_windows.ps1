@@ -39,11 +39,10 @@ Write-Host "Found $($Files.Count) audio files." -ForegroundColor Magenta
 foreach ($file in $Files) {
     $f = $file.FullName
     
-    # --- RESTORED & UPGRADED TITLE LOGIC ---
-    # 1. Apply your original sanitization (removes numbers, S_, and underscores)
+    # 1. Title Sanitization
     $Sanitized = ($file.BaseName -replace '^[0-9]+[_\s]*', '' -replace '^S_', '' -replace '_', ' ').Trim()
     
-    # 2. Apply Capitalization (lowercase everything, then uppercase first letter)
+    # 2. Capitalization Logic
     $Lower = $Sanitized.ToLower()
     $CleanTitle = if ($Lower.Length -gt 0) { $Lower.Substring(0,1).ToUpper() + $Lower.Substring(1) } else { "Audio" }
     
@@ -51,12 +50,17 @@ foreach ($file in $Files) {
     $ParentDir = Split-Path $file.Directory -Parent
     $DeviceName = if ($ParentDir) { (Split-Path $ParentDir -Leaf) -replace '[-_]', ' ' } else { "Mobile" }
     
-    # --- METADATA & PLAYLIST LOGIC ---
-    $TagPhone = $DeviceName -replace '\s+', ''
-    $TagFolder = $FolderCategory -replace '\s+', ''
-    $VideoDescription = "Enjoy the classic $CleanTitle $FolderCategory from the legendary $DeviceName. #$TagFolder #$TagPhone"
-    $VideoTitle = "$DeviceName $FolderCategory - $CleanTitle"
-    $PlaylistTitle = "$DeviceName $FolderCategory" # Playlist: "Phone Category"
+    # --- FIXED PLAYLIST & METADATA SANITIZATION ---
+    # Strip any dangerous single/double quotes that break CLI arguments
+    $CleanDevice = $DeviceName -replace "['`"]", ""
+    $CleanCategory = $FolderCategory -replace "['`"]", ""
+    
+    $TagPhone = $CleanDevice -replace '\s+', ''
+    $TagFolder = $CleanCategory -replace '\s+', ''
+    
+    $VideoDescription = "Enjoy the classic $CleanTitle $CleanCategory from the legendary $CleanDevice. #$TagFolder #$TagPhone"
+    $VideoTitle = "$CleanDevice $CleanCategory - $CleanTitle"
+    $PlaylistTitle = "$CleanDevice $CleanCategory"
     
     $TempVideo = Join-Path $RootDir "temp_rendering.mp4"
 
@@ -79,9 +83,20 @@ foreach ($file in $Files) {
     
     & $FFmpegPath @FFmpegArgs
 
+    # Using Splatting for Python arguments to safely handle spaces and playlist names
+    $UploadArgs = @(
+        "$UploaderScript",
+        "--title", $VideoTitle,
+        "--description", $VideoDescription,
+        "--playlist", $PlaylistTitle,
+        "--client-secrets", $ClientSecrets,
+        "--credentials-file", $TokenFile,
+        $TempVideo
+    )
+
     if (Test-Path $TempVideo) {
         Write-Host "Uploading to Playlist: $PlaylistTitle" -ForegroundColor Yellow
-        & $PythonCmd "$UploaderScript" --title "$VideoTitle" --description "$VideoDescription" --playlist "$PlaylistTitle" --client-secrets "$ClientSecrets" --credentials-file "$TokenFile" "$TempVideo"
+        & $PythonCmd @UploadArgs
         
         Remove-Item "$TempVideo" -ErrorAction SilentlyContinue
         Write-Host "Done! 30s nap..." -ForegroundColor Gray
@@ -90,7 +105,7 @@ foreach ($file in $Files) {
         Write-Host "FFmpeg failed. Skipping to fallback..." -ForegroundColor Red
         & $FFmpegPath -loop 1 -i "$BgImage" -i "$f" -c:v libx264 -tune stillimage -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:a aac -b:a 192k -pix_fmt yuv420p -shortest "$TempVideo" -y
         if (Test-Path $TempVideo) {
-             & $PythonCmd "$UploaderScript" --title "$VideoTitle" --description "$VideoDescription" --playlist "$PlaylistTitle" --client-secrets "$ClientSecrets" --credentials-file "$TokenFile" "$TempVideo"
+             & $PythonCmd @UploadArgs
              Remove-Item "$TempVideo"
         }
     }
