@@ -59,7 +59,7 @@ for f in *.ogg *.mp3 *.wav; do
     
     # 1. Title Sanitization
     raw_title="${f%.*}"
-    sanitized=$(echo "$raw_title" | sed -E 's/^([0-9]+[_\s]*|S_)//g' | sed 's/_/ /g')
+    sanitized=$(echo "$raw_title" | sed -E 's/^([0-9]+[_\s]*|S_|ACH_)//g' | sed -E 's/_ACH$//g' | sed 's/_/ /g')
     
     # 2. Capitalization Logic
     lower_title="${sanitized,,}"
