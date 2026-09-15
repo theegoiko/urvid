@@ -40,7 +40,7 @@ foreach ($file in $Files) {
     $f = $file.FullName
     
     # 1. Title Sanitization
-    $Sanitized = ($file.BaseName -replace '^[0-9]+[_\s]*', '' -replace '^S_', '' -replace '_', ' ').Trim()
+    $Sanitized = ($file.BaseName -replace '^[0-9]+[_\s]*', '' -replace '^S_', '' -replace '^ACH_', '' -replace '(?i)_ACH$', '' -replace '_', ' ').Trim()
     
     # 2. Capitalization Logic
     $Lower = $Sanitized.ToLower()
