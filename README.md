@@ -15,7 +15,7 @@ URVID is an automated batch-processing tool designed to take entire folders of a
 
 ## 🖥️ Minimum System Requirements
 Since URVID processes static images rather than full-motion video, it runs well on lightweight systems.
-* **OS:** Windows 10/11, macOS 10.15+, or Linux (Ubuntu 20.04+ / Arch / Fedora).
+* **OS:** Windows 10/11+WSL, macOS 10.15+, or Linux (Ubuntu 20.04+ / Arch / Fedora).
 * **CPU:** Dual-core processor (1.5 GHz or higher).
 * **RAM:** 4 GB minimum (8 GB recommended for smoother FFmpeg execution).
 * **Storage:** ~500 MB for Python, FFmpeg, and the repo + temporary space for video rendering (cleaned up automatically).
@@ -29,23 +29,8 @@ Since URVID processes static images rather than full-motion video, it runs well 
 You need to download your audio files to process. A massive, excellent archive of zipped phone ringtones can be found here:
 🔗 **[Andre Louis's Phonetones Archive](http://onj3.andrelouis.com/phonetones/zipped/)**
 
-### Windows
-1. **Install Python:** Download and install Python 3.x from [python.org](https://www.python.org/downloads/). *(Make sure to check "Add Python to PATH" during installation!)*
-2. **Install FFmpeg:** Download FFmpeg from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) or install via Winget:
-   ```powershell
-   winget install ffmpeg
-   ```
-3. **Clone the Repository:**
-   ```powershell
-   git clone [https://github.com/theegoiko/urvid.git](https://github.com/theegoiko/urvid.git)
-   cd urvid
-   ```
-4. **Install Python Dependencies:**
-   ```powershell
-   python -m pip install google-api-python-client oauth2client httplib2
-   ```
 
-### macOS (use urvid_linux.sh)
+### macOS 
 1. **Install Homebrew** (if you don't have it):
    ```bash
    /bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
@@ -86,8 +71,6 @@ Before running the script, ensure your `urvid` folder is structured correctly:
    * Rename it to `client_secrets.json` and place it in the `assets/` folder.
 3. **YouTube-Upload Module:** Ensure the `youtube-upload` folder/submodule is present inside the root directory.
 
-*Note for Windows Users: The script automatically bypasses FFmpeg's notorious `fontconfig` crash by pointing directly to `C:/Windows/Fonts/arial.ttf`.*
-
 ---
 
 ## 🚀 How to Use
@@ -106,16 +89,9 @@ Downloads/
 
 ### Running the Batch Upload
 
-**On Windows (PowerShell):**
-Open PowerShell, navigate to your `urvid` folder, and run the script, passing the target audio folder in quotes:
-
-```powershell
-.\urvid_windows.ps1 "C:\Users\YourName\Downloads\TCL-60-XE\ringtones"
-```
-
 **On Linux / Mac (Bash):**
 ```bash
-./urvid_linux.sh "/home/user/Downloads/TCL-60-XE/ringtones"
+./urvid.sh "/home/user/Downloads/TCL-60-XE/ringtones"
 ```
 
 ### First-Time Upload Authentication
