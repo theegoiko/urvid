@@ -1,6 +1,6 @@
 # 🎵 URVID — Universal Ringtone Video
 
-# ✨ URVID v2 is here - The future of URVID starts now.
+ ✨ URVID v2 is here - The future of URVID starts now.
 
 **URVID** is a Bash script that turns smartphone audio files—ringtones, notifications, alarms, and UI sounds—into videos with a background image. It uses FFmpeg to combine audio and images and can upload the resulting videos to YouTube.
 
